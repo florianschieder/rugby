@@ -1,7 +1,6 @@
 # rugby
 
 Rugby is an example project to illustrate using Rust libraries within Python code.
-At the time being, it can only built on Windows.
 
 ## Approach
 
