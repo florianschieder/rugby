@@ -6,11 +6,19 @@ from subprocess import run, PIPE
 from sys import executable as python_executable, exit, platform, version_info
 from typing import Callable
 
+
+def get_target_library_name(name):
+    return {
+        "win32": f"{name}.lib",
+        "linux": f"lib{name}.a",
+    }[platform]
+
+
 EXPECTED_PYTHON_VERSION = (3, 8)
-TARGET_LIBRARY = {
-    "win32": "rugby_sum.lib",
-    "linux": "librugby_sum.a",
-}[platform]
+
+RUGBY_SUM_LIB = get_target_library_name("rugby_sum")
+RUGBY_GREET_LIB = get_target_library_name("rugby_greet")
+
 PYTHON_EXT_EXPR = {
     "win32": "rugby_binding*.pyd",
     "linux": "rugby_binding*.so",
@@ -25,7 +33,7 @@ def resolve_glob(expr: str):
         )
     return matches[0]
 
-        
+
 class Action:
     def run(self):
         raise NotImplementedError()
@@ -37,29 +45,35 @@ class ChangeDirectory(Action):
 
     def __str__(self):
         return f"changing to {self._dir}"
-        
+
     def set_dir(self, dir):
         if not exists(dir):
             raise BrokenActionException(f"dir {dir} does not exist")
         self._dir = dir
-        
+
     def run(self):
         chdir(self._dir)
-        
+
 
 class RunCommand(Action):
     def __init__(self, command):
         self._command = command
-        
+
     def __str__(self):
         command_line = " ".join(self._command)
         return f"running `{command_line}`"
-        
+
     def run(self):
         result = run(self._command, stderr=PIPE, stdout=PIPE)
         if result.returncode != 0:
-            print(result.stdout)
-            print(result.stderr)
+            try:
+                print(result.stdout.decode("utf-8"))
+            except UnicodeDecodeError:
+                print(result.stdout)
+            try:
+                print(result.stderr.decode("utf-8"))
+            except UnicodeDecodeError:
+                print(result.stderr)
             raise ActionFailedException()
 
 
@@ -72,12 +86,12 @@ class Copy(Action):
         else:
             raise TypeError()
         self._dest = dest
-        
+
     def __str__(self):
         return f"copying {self._get_src()} to {self._dest}"
 
 
-class CopyFile(Copy):     
+class CopyFile(Copy):
     def run(self):
         copy(self._get_src(), self._dest)
 
@@ -86,7 +100,7 @@ class CopyFiles(Copy):
     def run(self):
         for match in glob(self._get_src()):
             copy(match, join(self._dest, basename(match)))
-        
+
 
 class CopyDirectory(Copy):
     def run(self):
@@ -96,13 +110,13 @@ class CopyDirectory(Copy):
 class MakeDirectory(Action):
     def __init__(self, path):
         self._path = path
-        
+
     def __str__(self):
         return f"creating directory {self._path}"
 
     def run(self):
         makedirs(self._path, exist_ok=True)
-        
+
 
 class RunPython(RunCommand):
     def __init__(self, args):
@@ -118,20 +132,22 @@ class ActionFailedException(RuntimeError):
 
 
 steps = [
-    ChangeDirectory("crates/rugby-sum/"),
+    ChangeDirectory("crates/"),
     RunCommand(("cargo", "build")),
     RunCommand(("cargo", "test")),
     RunCommand(("cargo", "clippy")),
     RunCommand(("cargo", "fmt", "--check")),
     RunCommand(("cargo", "build", "--release")),
-    ChangeDirectory("../../"),
+    ChangeDirectory("../"),
 
-    CopyFile(f"crates/rugby-sum/target/release/{TARGET_LIBRARY}",
-             f"intermediate/{TARGET_LIBRARY}"),
+    CopyFile(f"crates/target/release/{RUGBY_SUM_LIB}",
+             f"intermediate/{RUGBY_SUM_LIB}"),
+    CopyFile(f"crates/target/release/{RUGBY_GREET_LIB}",
+             f"intermediate/{RUGBY_GREET_LIB}"),
 
     CopyDirectory("packages/rugby/", "intermediate/"),
     ChangeDirectory("intermediate/"),
-    
+
     RunPython(("setup.py", "build")),
     RunPython(("setup.py", "test")),
 

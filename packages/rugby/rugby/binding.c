@@ -2,6 +2,8 @@
 
 /////////////////////////// Rust-C binding ///////////////////////////
 int rugby_sum(int lowerBound, int upperBound);
+const char * rugby_greet(const char *name);
+void free_string(const char *str);
 
 /////////////////////////// C-Python binding ///////////////////////////
 
@@ -16,11 +18,28 @@ static PyObject * binding_sum(PyObject *self, PyObject *args)
     return PyLong_FromLong(rugby_sum(lowerBound, upperBound));
 }
 
+
+static PyObject * binding_greet(PyObject *self, PyObject *args)
+{
+    const char *name;
+
+    if (!PyArg_ParseTuple(args, "s", &name)) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to retrieve arguments");
+    }
+
+    const char *dest = rugby_greet(name);
+    PyObject *str = PyUnicode_FromString(dest);
+    free_string(dest);
+    return str;
+}
+
 /////////////////////////// Python module metadata ///////////////////////////
 
 static PyMethodDef RugbyBindingMethods[] = {
     {"sum", binding_sum, METH_VARARGS,
      "Calculate the Gauss sum of a range of two numbers"},
+    {"greet", binding_greet, METH_VARARGS,
+     "Greet some person"},
     {NULL, NULL, 0, NULL},
 };
 
