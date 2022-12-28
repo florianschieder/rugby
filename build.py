@@ -53,8 +53,8 @@ class RunCommand(Action):
     def run(self):
         result = run(self._command, stderr=PIPE, stdout=PIPE)
         if result.returncode != 0:
-            print(result.stdout.decode())
-            print(result.stderr.decode())
+            print(result.stdout)
+            print(result.stderr)
             raise ActionFailedException()
 
 
