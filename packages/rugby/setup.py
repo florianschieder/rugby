@@ -20,6 +20,10 @@ extensions = {
             "msvc": [
                 "rugby_sum.lib",
                 "rugby_greet.lib",
+                "WS2_32.lib",
+                "Bcrypt.lib",
+                "Userenv.lib",
+                "Advapi32.lib",
             ],
             "unix": [
                 "librugby_sum.a",
