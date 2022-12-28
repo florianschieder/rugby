@@ -21,7 +21,7 @@ extensions = {
                 "rugby_sum.lib",
             ],
             "unix": [
-                # TODO
+                "librugby_sum.a",
             ],
         },
     }

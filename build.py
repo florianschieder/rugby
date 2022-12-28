@@ -6,9 +6,11 @@ from subprocess import run, PIPE
 from sys import executable as python_executable, exit, platform, version_info
 from typing import Callable
 
-# TODO: Support unix too
 EXPECTED_PYTHON_VERSION = (3, 8)
-LIB_EXT = {"win32": "lib"}[platform]
+TARGET_LIBRARY = {
+    "win32": "rugby_sum.lib",
+    "linux": "librugby_sum.a",
+}[platform]
 
 
 def resolve_glob(expr: str):
@@ -120,8 +122,8 @@ steps = [
     RunCommand(("cargo", "build", "--release")),
     ChangeDirectory("../../"),
 
-    CopyFile(f"crates/rugby-sum/target/release/rugby_sum.{LIB_EXT}",
-             f"intermediate/rugby_sum.{LIB_EXT}"),
+    CopyFile(f"crates/rugby-sum/target/release/{TARGET_LIBRARY}",
+             f"intermediate/{TARGET_LIBRARY}"),
 
     CopyDirectory("packages/rugby/", "intermediate/"),
     ChangeDirectory("intermediate/"),
@@ -129,7 +131,7 @@ steps = [
     RunPython(("setup.py", "build")),
     RunPython(("setup.py", "test")),
 
-    CopyFile(lambda: resolve_glob("rugby_binding.*.pyd"), "../release"),
+    CopyFile(lambda: resolve_glob("rugby_binding.cpython*"), "../release"),
     MakeDirectory("../release/rugby"),
 
     CopyFiles("rugby/*.py", "../release/rugby"),
