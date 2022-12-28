@@ -6,9 +6,10 @@ from subprocess import run, PIPE
 from sys import executable as python_executable, exit, platform, version_info
 from typing import Callable
 
+# TODO: Support unix too
 EXPECTED_PYTHON_VERSION = (3, 8)
-DYN_EXT = {"win32": "dll", "unix": "so"}[platform]
-IMP_EXT = {"win32": "lib", "unix": "a"}[platform]
+DYN_EXT = {"win32": "dll"}[platform]
+IMP_EXT = {"win32": "lib"}[platform]
 
 
 def resolve_glob(expr: str):

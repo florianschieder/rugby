@@ -3,5 +3,8 @@ name = "rugby-sum"
 version = "0.1.0"
 edition = "2021"
 
+# TODO: Compiling `cdylib` on Unix does not generate an import
+# library as it does on Windows. Maybe this is not common on
+# Unix platforms, but it should be fixed anyway.
 [lib]
 crate-type = ["cdylib"]
