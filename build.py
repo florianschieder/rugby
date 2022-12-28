@@ -6,10 +6,15 @@ from subprocess import run, PIPE
 from sys import executable as python_executable, exit, platform, version_info
 from typing import Callable
 
-# TODO: Support unix too
 EXPECTED_PYTHON_VERSION = (3, 8)
-DYN_EXT = {"win32": "dll"}[platform]
-IMP_EXT = {"win32": "lib"}[platform]
+TARGET_LIBRARY = {
+    "win32": "rugby_sum.lib",
+    "linux": "librugby_sum.a",
+}[platform]
+PYTHON_EXT_EXPR = {
+    "win32": "rugby_binding*.pyd",
+    "linux": "rugby_binding*.so",
+}[platform]
 
 
 def resolve_glob(expr: str):
@@ -121,10 +126,8 @@ steps = [
     RunCommand(("cargo", "build", "--release")),
     ChangeDirectory("../../"),
 
-    CopyFile(f"crates/rugby-sum/target/release/rugby_sum.{DYN_EXT}",
-             f"intermediate/rugby_sum.{DYN_EXT}"),
-    CopyFile(f"crates/rugby-sum/target/release/rugby_sum.{DYN_EXT}.{IMP_EXT}",
-             f"intermediate/rugby_sum.{DYN_EXT}.{IMP_EXT}"),
+    CopyFile(f"crates/rugby-sum/target/release/{TARGET_LIBRARY}",
+             f"intermediate/{TARGET_LIBRARY}"),
 
     CopyDirectory("packages/rugby/", "intermediate/"),
     ChangeDirectory("intermediate/"),
@@ -132,8 +135,7 @@ steps = [
     RunPython(("setup.py", "build")),
     RunPython(("setup.py", "test")),
 
-    CopyFile(f"rugby_sum.{DYN_EXT}", "../release"),
-    CopyFile(lambda: resolve_glob("rugby_binding.*.pyd"), "../release"),
+    CopyFile(lambda: resolve_glob(PYTHON_EXT_EXPR), "../release"),
     MakeDirectory("../release/rugby"),
 
     CopyFiles("rugby/*.py", "../release/rugby"),

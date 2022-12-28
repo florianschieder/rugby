@@ -1,4 +1,4 @@
-name: Build Rugby on Windows
+name: Build Rugby on Ubuntu
 
 on:
   push:
@@ -9,13 +9,13 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - uses: actions-rs/toolchain@v1.0.6
       with:
-        toolchain: stable-msvc
+        toolchain: stable-gnu
     - uses: actions/setup-python@v4.4.0
       with:
         python-version: '3.10'
