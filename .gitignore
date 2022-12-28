@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/rust,c,c++,python
-# Edit at https://www.toptal.com/developers/gitignore?templates=rust,c,c++,python
+# Created by https://www.toptal.com/developers/gitignore/api/c,c++,rust,python,vim
+# Edit at https://www.toptal.com/developers/gitignore?templates=c,c++,rust,python,vim
 
 ### C ###
 # Prerequisites
@@ -254,4 +254,25 @@ Cargo.lock
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 
-# End of https://www.toptal.com/developers/gitignore/api/rust,c,c++,python
+### Vim ###
+# Swap
+[._]*.s[a-v][a-z]
+!*.svg  # comment out if you don't need vector files
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Session
+Session.vim
+Sessionx.vim
+
+# Temporary
+.netrwhist
+*~
+# Auto-generated tag files
+tags
+# Persistent undo
+[._]*.un~
+
+# End of https://www.toptal.com/developers/gitignore/api/c,c++,rust,python,vim
