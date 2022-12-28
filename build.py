@@ -125,13 +125,13 @@ class ActionFailedException(RuntimeError):
 
 
 steps = [
-    ChangeDirectory("crates/rugby-sum/"),
+    ChangeDirectory("crates/"),
     RunCommand(("cargo", "build")),
     RunCommand(("cargo", "test")),
     RunCommand(("cargo", "clippy")),
     RunCommand(("cargo", "fmt", "--check")),
     RunCommand(("cargo", "build", "--release")),
-    ChangeDirectory("../../"),
+    ChangeDirectory("../"),
 
     CopyFile(f"crates/rugby-sum/target/release/{RUGBY_SUM_LIB}",
              f"intermediate/{RUGBY_SUM_LIB}"),
