@@ -1,4 +1,4 @@
-name: Rust
+name: Build Rugby on Windows
 
 on:
   push:
