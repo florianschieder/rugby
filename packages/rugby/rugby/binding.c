@@ -3,6 +3,7 @@
 /////////////////////////// Rust-C binding ///////////////////////////
 int rugby_sum(int lowerBound, int upperBound);
 const char * rugby_greet(const char *name);
+void free_string(const char *str);
 
 /////////////////////////// C-Python binding ///////////////////////////
 
@@ -27,7 +28,9 @@ static PyObject * binding_greet(PyObject *self, PyObject *args)
     }
 
     const char *dest = rugby_greet(name);
-    return PyUnicode_FromString(dest);
+    PyObject *str = PyUnicode_FromString(dest);
+    free_string(dest);
+    return str;
 }
 
 /////////////////////////// Python module metadata ///////////////////////////
