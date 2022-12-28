@@ -17,6 +17,7 @@ def get_target_library_name(name):
 EXPECTED_PYTHON_VERSION = (3, 8)
 
 RUGBY_SUM_LIB = get_target_library_name("rugby_sum")
+RUGBY_GREET_LIB = get_target_library_name("rugby_greet")
 
 PYTHON_EXT_EXPR = {
     "win32": "rugby_binding*.pyd",
@@ -139,8 +140,10 @@ steps = [
     RunCommand(("cargo", "build", "--release")),
     ChangeDirectory("../"),
 
-    CopyFile(f"crates/rugby-sum/target/release/{RUGBY_SUM_LIB}",
+    CopyFile(f"crates/target/release/{RUGBY_SUM_LIB}",
              f"intermediate/{RUGBY_SUM_LIB}"),
+    CopyFile(f"crates/target/release/{RUGBY_GREET_LIB}",
+             f"intermediate/{RUGBY_GREET_LIB}"),
 
     CopyDirectory("packages/rugby/", "intermediate/"),
     ChangeDirectory("intermediate/"),

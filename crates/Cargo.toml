@@ -1,5 +1,6 @@
 [workspace]
 
 members = [
+    "rugby-greet",
     "rugby-sum"
 ]

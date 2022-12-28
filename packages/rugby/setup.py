@@ -19,9 +19,11 @@ extensions = {
         "extra_link_args": {
             "msvc": [
                 "rugby_sum.lib",
+                "rugby_greet.lib",
             ],
             "unix": [
                 "librugby_sum.a",
+                "librugby_greet.a",
             ],
         },
     }
