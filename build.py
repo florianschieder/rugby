@@ -65,8 +65,14 @@ class RunCommand(Action):
     def run(self):
         result = run(self._command, stderr=PIPE, stdout=PIPE)
         if result.returncode != 0:
-            print(result.stdout)
-            print(result.stderr)
+            try:
+                print(result.stdout.decode("utf-8"))
+            except UnicodeDecodeError:
+                print(result.stdout)
+            try:
+                print(result.stderr.decode("utf-8"))
+            except UnicodeDecodeError:
+                print(result.stderr)
             raise ActionFailedException()
 
 
