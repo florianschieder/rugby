@@ -11,6 +11,10 @@ TARGET_LIBRARY = {
     "win32": "rugby_sum.lib",
     "linux": "librugby_sum.a",
 }[platform]
+PYTHON_EXT_EXPR = {
+    "win32": "rugby_binding*.pyd",
+    "linux": "rugby_binding*.so",
+}[platform]
 
 
 def resolve_glob(expr: str):
@@ -131,7 +135,7 @@ steps = [
     RunPython(("setup.py", "build")),
     RunPython(("setup.py", "test")),
 
-    CopyFile(lambda: resolve_glob("rugby_binding.cpython*"), "../release"),
+    CopyFile(lambda: resolve_glob(PYTHON_EXT_EXPR), "../release"),
     MakeDirectory("../release/rugby"),
 
     CopyFiles("rugby/*.py", "../release/rugby"),
