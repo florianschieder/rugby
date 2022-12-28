@@ -18,7 +18,7 @@ extensions = {
         },
         "extra_link_args": {
             "msvc": [
-                "rugby_sum.dll.lib",
+                "rugby_sum.lib",
             ],
             "unix": [
                 # TODO

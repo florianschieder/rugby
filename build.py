@@ -8,8 +8,7 @@ from typing import Callable
 
 # TODO: Support unix too
 EXPECTED_PYTHON_VERSION = (3, 8)
-DYN_EXT = {"win32": "dll"}[platform]
-IMP_EXT = {"win32": "lib"}[platform]
+LIB_EXT = {"win32": "lib"}[platform]
 
 
 def resolve_glob(expr: str):
@@ -121,10 +120,8 @@ steps = [
     RunCommand(("cargo", "build", "--release")),
     ChangeDirectory("../../"),
 
-    CopyFile(f"crates/rugby-sum/target/release/rugby_sum.{DYN_EXT}",
-             f"intermediate/rugby_sum.{DYN_EXT}"),
-    CopyFile(f"crates/rugby-sum/target/release/rugby_sum.{DYN_EXT}.{IMP_EXT}",
-             f"intermediate/rugby_sum.{DYN_EXT}.{IMP_EXT}"),
+    CopyFile(f"crates/rugby-sum/target/release/rugby_sum.{LIB_EXT}",
+             f"intermediate/rugby_sum.{LIB_EXT}"),
 
     CopyDirectory("packages/rugby/", "intermediate/"),
     ChangeDirectory("intermediate/"),
@@ -132,7 +129,6 @@ steps = [
     RunPython(("setup.py", "build")),
     RunPython(("setup.py", "test")),
 
-    CopyFile(f"rugby_sum.{DYN_EXT}", "../release"),
     CopyFile(lambda: resolve_glob("rugby_binding.*.pyd"), "../release"),
     MakeDirectory("../release/rugby"),
 
