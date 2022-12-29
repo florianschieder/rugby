@@ -4,7 +4,7 @@ Rugby is an example project to illustrate using Rust libraries within Python cod
 
 ## Approach
 
-Rugby uses the following approach: Writing code and tests within Rust, generate C bindings and use them within a Python C extension.
+Rugby uses the following approach: Writing code and tests using Rust, generate C bindings and use them within a Python C extension.
 
 ## Naming
 
